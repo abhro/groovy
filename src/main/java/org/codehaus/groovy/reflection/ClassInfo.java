@@ -276,7 +276,7 @@ public class ClassInfo implements Finalizable {
     private MetaClass getMetaClassUnderLock() {
         MetaClass answer = getStrongMetaClass();
         if (answer!=null) {
-            if (answer instanceof MetaClassImpl && !((MetaClassImpl) answer).isInitialized()) {
+            if (answer.getClass() == MetaClassImpl.class && ((MetaClassImpl) answer).getTheClass() == System.class && !((MetaClassImpl) answer).isInitialized()) {
                 throw new GroovyBugError("2: " + answer);
             }
             return answer;
@@ -287,7 +287,7 @@ public class ClassInfo implements Finalizable {
         MetaClassRegistry.MetaClassCreationHandle mccHandle = metaClassRegistry.getMetaClassCreationHandler();
 
         if (isValidWeakMetaClass(answer, mccHandle)) {
-            if (answer instanceof MetaClassImpl && !((MetaClassImpl) answer).isInitialized()) {
+            if (answer.getClass() == MetaClassImpl.class && ((MetaClassImpl) answer).getTheClass() == System.class && !((MetaClassImpl) answer).isInitialized()) {
                 throw new GroovyBugError("3: " + answer);
             }
 
@@ -303,7 +303,7 @@ public class ClassInfo implements Finalizable {
             setWeakMetaClass(answer);
         }
 
-        if (answer instanceof MetaClassImpl && !((MetaClassImpl) answer).isInitialized()) {
+        if (answer.getClass() == MetaClassImpl.class && ((MetaClassImpl) answer).getTheClass() == System.class && !((MetaClassImpl) answer).isInitialized()) {
             throw new GroovyBugError("4: " + answer);
         }
 
@@ -339,7 +339,7 @@ public class ClassInfo implements Finalizable {
     public final MetaClass getMetaClass() {
         MetaClass answer = getMetaClassForClass();
         if (answer != null) {
-            if (answer instanceof MetaClassImpl && !((MetaClassImpl) answer).isInitialized()) {
+            if (answer.getClass() == MetaClassImpl.class && ((MetaClassImpl) answer).getTheClass() == System.class && !((MetaClassImpl) answer).isInitialized()) {
                 throw new GroovyBugError("1: " + answer);
             }
             return answer;
