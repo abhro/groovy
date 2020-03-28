@@ -265,9 +265,19 @@ public class ClassInfo implements Finalizable {
         // safe value here to avoid multiple reads with possibly
         // differing values due to concurrency
         MetaClass strongMc = strongMetaClass;
-        if (strongMc!=null) return strongMc;
+        if (strongMc!=null) {
+            if (strongMc.getClass() == MetaClassImpl.class && ((MetaClassImpl) strongMc).getTheClass() == System.class && !((MetaClassImpl) strongMc).isInitialized()) {
+                throw new GroovyBugError("5: " + strongMc);
+            }
+
+            return strongMc;
+        }
         MetaClass weakMc = getWeakMetaClass();
         if (isValidWeakMetaClass(weakMc)) {
+            if (weakMc.getClass() == MetaClassImpl.class && ((MetaClassImpl) weakMc).getTheClass() == System.class && !((MetaClassImpl) weakMc).isInitialized()) {
+                throw new GroovyBugError("6: " + weakMc);
+            }
+
             return weakMc;
         }
         return null;
