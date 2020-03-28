@@ -575,8 +575,14 @@ public final class ClosureMetaClass extends MetaClassImpl {
         return null;
     }
 
-    protected boolean isInitialized() {
+    @Override
+    public boolean isInitialized() {
         return initialized;
+    }
+
+    @Override
+    protected void setInitialized(boolean initialized) {
+        this.initialized = initialized;
     }
 
     public MetaMethod getStaticMetaMethod(String name, Object[] args) {

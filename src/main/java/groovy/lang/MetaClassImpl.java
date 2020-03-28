@@ -3131,8 +3131,12 @@ public class MetaClassImpl implements MetaClass, MutableMetaClass {
         }
     }
 
-    protected boolean isInitialized() {
+    public boolean isInitialized() {
         return initialized;
+    }
+
+    protected void setInitialized(boolean initialized) {
+        this.initialized = initialized;
     }
 
     /**
@@ -3391,7 +3395,8 @@ public class MetaClassImpl implements MetaClass, MutableMetaClass {
                 // Introspection failure...
                 // May happen in Android
             }
-            initialized = true;
+
+            setInitialized(true);
         }
     }
 

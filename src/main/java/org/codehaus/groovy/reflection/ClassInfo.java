@@ -23,8 +23,10 @@ import groovy.lang.ExpandoMetaClass;
 import groovy.lang.ExpandoMetaClassCreationHandle;
 import groovy.lang.GroovySystem;
 import groovy.lang.MetaClass;
+import groovy.lang.MetaClassImpl;
 import groovy.lang.MetaClassRegistry;
 import groovy.lang.MetaMethod;
+import org.codehaus.groovy.GroovyBugError;
 import org.codehaus.groovy.reflection.GroovyClassValue.ComputeValue;
 import org.codehaus.groovy.reflection.stdclasses.ArrayCachedClass;
 import org.codehaus.groovy.reflection.stdclasses.BigDecimalCachedClass;
@@ -273,13 +275,22 @@ public class ClassInfo implements Finalizable {
 
     private MetaClass getMetaClassUnderLock() {
         MetaClass answer = getStrongMetaClass();
-        if (answer!=null) return answer;
+        if (answer!=null) {
+            if (answer instanceof MetaClassImpl && !((MetaClassImpl) answer).isInitialized()) {
+                throw new GroovyBugError("2: " + answer);
+            }
+            return answer;
+        }
 
         answer = getWeakMetaClass();
         final MetaClassRegistry metaClassRegistry = GroovySystem.getMetaClassRegistry();
         MetaClassRegistry.MetaClassCreationHandle mccHandle = metaClassRegistry.getMetaClassCreationHandler();
 
         if (isValidWeakMetaClass(answer, mccHandle)) {
+            if (answer instanceof MetaClassImpl && !((MetaClassImpl) answer).isInitialized()) {
+                throw new GroovyBugError("3: " + answer);
+            }
+
             return answer;
         }
 
@@ -291,6 +302,11 @@ public class ClassInfo implements Finalizable {
         } else {
             setWeakMetaClass(answer);
         }
+
+        if (answer instanceof MetaClassImpl && !((MetaClassImpl) answer).isInitialized()) {
+            throw new GroovyBugError("4: " + answer);
+        }
+
         return answer;
     }
 
@@ -322,7 +338,12 @@ public class ClassInfo implements Finalizable {
      */
     public final MetaClass getMetaClass() {
         MetaClass answer = getMetaClassForClass();
-        if (answer != null) return answer;
+        if (answer != null) {
+            if (answer instanceof MetaClassImpl && !((MetaClassImpl) answer).isInitialized()) {
+                throw new GroovyBugError("1: " + answer);
+            }
+            return answer;
+        }
 
         lock();
         try {
